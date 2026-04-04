@@ -1,0 +1,1 @@
+tac.o: tac.c

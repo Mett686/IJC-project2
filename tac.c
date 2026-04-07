@@ -126,7 +126,8 @@ int main(int argc, char **argv) {
     list_ins_first(&reverse_list, buffer);
     if(limit) lines_read++;
   }
-
+  
+  fclose(file);
   list_print(&reverse_list);
   list_free(&reverse_list);
   exit(EXIT_SUCCESS);

@@ -1,48 +1,29 @@
 // htab_private.h
-// Řešení IJC-DU2, příklad a), 31.4.2026
+// Řešení IJC-DU2, příklad 2), 31.4.2026
 // Autor: Martin Knotek, FIT
 // Přeloženo: gcc version 15.2.1 20260123 (Red Hat 15.2.1-7) (GCC)
 
 // následující řádky zabrání násobnému vložení:
-#ifndef HTAB_H__
-#define HTAB_H__
+#ifndef HTAB_PRIVATE_H__
+#define HTAB_PRIVATE_H__
 
 #include <string.h>     // size_t
 #include <stdbool.h>    // bool
+#include "htab.h"
+
+// Prvek:
+struct htab_item {
+  htab_pair_t data;
+  htab_item_t* next;
+};
+typedef struct htab_item htab_item_t;
 
 // Tabulka:
-struct htab;    // neúplná deklarace struktury - uživatel nevidí obsah
+struct htab {
+  size_t size;
+  size_t arr_size;
+  htab_item_t* arr[];
+};
 typedef struct htab htab_t;     // typedef podle zadání
 
-// Typy:
-typedef const char * htab_key_t;        // typ klíče
-typedef unsigned htab_value_t;          // typ hodnoty
-
-// Dvojice dat v tabulce:
-typedef struct htab_pair {
-    htab_key_t    key;          // klíč
-    htab_value_t  value;        // asociovaná hodnota
-} htab_pair_t;                  // typedef podle zadání
-
-// Rozptylovací (hash) funkce (je stejná pro všechny tabulky v programu)
-// Pokud si v programu definujete stejnou funkci, použije se ta vaše.
-size_t htab_hash_function(htab_key_t str);
-
-// Funkce pro operace s tabulkou:
-htab_t *htab_init(size_t n);                    // konstruktor tabulky
-size_t htab_size(const htab_t * t);             // počet záznamů v tabulce
-size_t htab_bucket_count(const htab_t * t);     // velikost pole
-
-htab_pair_t * htab_find(const htab_t * t, htab_key_t key);  // hledání
-htab_pair_t * htab_lookup_add(htab_t * t, htab_key_t key);  //  +vložení
-
-bool htab_erase(htab_t * t, htab_key_t key);    // ruší zadaný záznam
-
-// for_each: projde všechny záznamy a zavolá na ně funkci f
-// Pozor: f nesmí měnit klíč .key ani přidávat/rušit položky
-void htab_for_each(const htab_t * t, void (*f)(htab_pair_t *data));
-
-void htab_clear(htab_t * t);    // ruší všechny záznamy
-void htab_free(htab_t * t);     // destruktor tabulky
-
-#endif // HTAB_H__
+#endif // HTAB_PRIVATE_H__

@@ -7,23 +7,22 @@
 #ifndef HTAB_PRIVATE_H__
 #define HTAB_PRIVATE_H__
 
-#include <string.h>     // size_t
-#include <stdbool.h>    // bool
 #include "htab.h"
+#include <stdlib.h>
 
 // Prvek:
+typedef struct htab_item htab_item_t;
 struct htab_item {
   htab_pair_t data;
   htab_item_t* next;
 };
-typedef struct htab_item htab_item_t;
 
 // Tabulka:
+typedef struct htab htab_t;     // typedef podle zadání
 struct htab {
   size_t size;
   size_t arr_size;
   htab_item_t* arr[];
 };
-typedef struct htab htab_t;     // typedef podle zadání
 
 #endif // HTAB_PRIVATE_H__

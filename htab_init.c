@@ -3,9 +3,9 @@
 // Autor: Martin Knotek, FIT
 // Přeloženo: gcc version 15.2.1 20260123 (Red Hat 15.2.1-7) (GCC)
 
-#include "libhtab/htab_private.h"
+#include "htab_private.h"
 
-// Inicializuje tabulku velikosti n bucketu
+// Inicializuje tabulku o velikosti n bucketu
 htab_t *htab_init(size_t n) {
   htab_t* t = malloc(sizeof(htab_t) + n * sizeof(htab_item_t*));
   if(t) {

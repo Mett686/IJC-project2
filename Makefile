@@ -1,37 +1,39 @@
-export LC_ALL = cs_CZ.utf8
 CC = gcc
 CFLAGS = -g -std=c11 -pedantic -Wall -Wextra -MMD -MP
 LDLIBS =
 xlogin = xknotem00
 
-TARGETS = primes primes-i no-comment
+LIB_HTAB = $(wildcard htab_*.c)
 
-all: $(TARGETS)
+all: tac maxwordcount clean #maxwordcount-dynamic libhtab.a libhtab.so
 
--include *.d
-
-primes: primes.o eratosthenes.o error.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
-
-primes-i: primes-i.o eratosthenes-i.o bitarray-i.o error.o
-	$(CC) $(CFLAGS) -o $@ $^ $(LDLIBS)
-
+################################################################
 tac: tac.o
 	$(CC) $(CFLAGS) -o $@ $^
 
+maxwordcount: maxwordcount.o io.o libhtab.a
+	$(CC) $(CFLAGS) -o $@ $^
 
-no-comment.o: CFLAGS += -D_POSIX_C_SOURCE 
+maxwordcount-dynamic: maxwordcount.o io.o libhtab.so
+	$(CC) $(CFLAGS) -o $@ maxwordcount.o io.o -L. -lhtab
 
-%-i.o: %.c
-	$(CC) $(CFLAGS) -DUSE_INLINE -c $< -o $@
+################################################################
+libhtab.a: $(LIB_HTAB:.c=.o)
+	ar rcs $@ $^
 
+libhtab.so: $(LIB_HTAB:.c=pic.o)
+	$(CC) $(CFLAGS) -shared -o $@ $^
+
+################################################################
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+%.pic.o: %.c
+	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 
-run: primes primes-i
-	ulimit -s unlimited && ./primes
-	ulimit -s unlimited && ./primes-i
+################################################################
+run: maxwordcount
+	./maxwordcount
 
 clean:
 	rm -f *.o *.d $(xlogin).zip
@@ -39,4 +41,6 @@ clean:
 zip:
 	zip $(xlogin).zip *.c *.h Makefile
 
-.PHONY: all run clean zip
+-include *.d
+
+.PHONY: run clean zip

@@ -5,9 +5,9 @@
 #include <ctype.h>
 #include <string.h>
 
-static bool warned = false;
 
 int read_word(unsigned max, char s[max], FILE * f) {
+  static bool warned = false;
   char c;
   while((c = fgetc(f)) != EOF && isspace(c));
   

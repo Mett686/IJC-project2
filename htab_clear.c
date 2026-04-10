@@ -12,6 +12,7 @@ void htab_clear(htab_t * t) {
     htab_item_t* item = t->arr[i];
     while(item) {
       htab_item_t* next = item->next;
+      free((void*)item->data.key);
       free(item);
       t->size--;
       item = next;

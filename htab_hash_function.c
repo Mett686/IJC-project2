@@ -6,6 +6,7 @@
 #include "htab_private.h"
 #include <stdint.h>
 
+#ifndef MY_HASH_FUNCTION
 // Vraci hash
 size_t htab_hash_function(const char *str) {
   uint32_t h=0;     // musí mít 32 bitů
@@ -14,3 +15,4 @@ size_t htab_hash_function(const char *str) {
       h = 65599*h + *p;
   return h;
 }
+#endif

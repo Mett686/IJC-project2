@@ -8,22 +8,23 @@
 #include "htab.h"
 #include "io.h"
 
-#define BUFF_SIZE 100
+#define BUFF_SIZE 30000 // Velikost pole bucketu (arr_size v htab)
+// Vybrana jakozto prumerne slovni zasoba dospeleho cloveka
 
 static unsigned count_threshold = 0;
 
-////////////////////////////////////////////////////////////////////////////////////
+#ifdef MY_HASH_FUNCTION
+#include <stdint.h>
+size_t htab_hash_function(const char *str) {
+  uint32_t hash = 5381;
+  int c;
 
-void table_header_print(htab_t* table) {
-  fprintf(stdout, "Table size: %ld\nBucket count: %ld\n", htab_size(table), htab_bucket_count(table));
+  while ((c = *str++))
+      hash = ((hash << 5) + hash) + c; /* hash * 33 + c */
+
+  return hash;
 }
-
-///////////////////////////////////////////////
-
-
-void data_print(htab_pair_t* data) {
-  fprintf(stdout, "%s\t%d\n", data->key, data->value);
-}
+#endif
 
 void print_most_common(htab_pair_t* data) {
   if(data->value == count_threshold)
@@ -38,22 +39,18 @@ bool htab_inc_add(htab_t* t, char* key) {
       count_threshold = pair->value;
     return EXIT_SUCCESS;
   } else {
+    fprintf(stderr, "Error: htab_inc_add: htab_lookup_add returned NULL\n");
     return EXIT_FAILURE;
   }
 }
 
 int main() {
   htab_t* table = htab_init(50);
-  table_header_print(table);
-  htab_for_each(table, &data_print);
-
   char buffer[BUFF_SIZE];
   unsigned len = 0;
   while((len = read_word(BUFF_SIZE, buffer, stdin)) != (unsigned)EOF) {
-    htab_inc_add(table, buffer);
+    if(htab_inc_add(table, buffer)) return EXIT_FAILURE;
   }
-  printf("Max count: %u\n", count_threshold);
-  table_header_print(table);
   htab_for_each(table, &print_most_common);
   htab_free(table);
 

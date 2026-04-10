@@ -1,11 +1,12 @@
 CC = gcc
-CFLAGS = -g -std=c11 -pedantic -Wall -Wextra -MMD -MP
+CFLAGS = -g -std=c11 -pedantic -Wall -Wextra -MMD -MP -DMY_HASH_FUNCTION
 LDLIBS =
 xlogin = xknotem00
 
+LD_LIBRARY_PATH = .
 LIB_HTAB = $(wildcard htab_*.c)
 
-all: tac maxwordcount clean #maxwordcount-dynamic libhtab.a libhtab.so
+all: tac maxwordcount maxwordcount-dynamic libhtab.a libhtab.so
 
 ################################################################
 tac: tac.o
@@ -21,7 +22,7 @@ maxwordcount-dynamic: maxwordcount.o io.o libhtab.so
 libhtab.a: $(LIB_HTAB:.c=.o)
 	ar rcs $@ $^
 
-libhtab.so: $(LIB_HTAB:.c=pic.o)
+libhtab.so: $(LIB_HTAB:.c=.pic.o)
 	$(CC) $(CFLAGS) -shared -o $@ $^
 
 ################################################################
@@ -32,8 +33,11 @@ libhtab.so: $(LIB_HTAB:.c=pic.o)
 	$(CC) $(CFLAGS) -fPIC -c $< -o $@
 
 ################################################################
-run: maxwordcount
-	./maxwordcount
+run: maxwordcount maxwordcount-dynamic tac
+	(cat maxwordcount.c) | ./maxwordcount
+	(cat maxwordcount.c) | LD_LIBRARY_PATH=. ./maxwordcount-dynamic
+	(cat maxwordcount.c) | ./a.out
+	
 
 clean:
 	rm -f *.o *.d $(xlogin).zip

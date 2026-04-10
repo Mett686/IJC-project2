@@ -13,6 +13,7 @@ bool htab_erase(htab_t * t, htab_key_t key) {
   while(item) {
     if(strcmp(key, item->data.key) == 0) {
       previos_item->next = item->next;
+      free((void*)item->data.key);
       free(item);
       t->size--;
       return true;

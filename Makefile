@@ -34,10 +34,21 @@ libhtab.so: $(LIB_HTAB:.c=.pic.o)
 
 ################################################################
 run: maxwordcount maxwordcount-dynamic tac
+	(cat tests/longword.txt) | ./maxwordcount
+	(cat tests/longword.txt) | LD_LIBRARY_PATH=. ./maxwordcount-dynamic
+	(cat tests/longword.txt) | ./maxwordcount-cpp
+
+	(cat tests/romeo_julie.txt) | ./maxwordcount
+	(cat tests/romeo_julie.txt) | LD_LIBRARY_PATH=. ./maxwordcount-dynamic
+	(cat tests/romeo_julie.txt) | ./maxwordcount-cpp
+
 	(cat maxwordcount.c) | ./maxwordcount
 	(cat maxwordcount.c) | LD_LIBRARY_PATH=. ./maxwordcount-dynamic
-	(cat maxwordcount.c) | ./a.out
+	(cat maxwordcount.c) | ./maxwordcount-cpp
 	
+	(cat .zadani.txt) | ./maxwordcount
+	(cat .zadani.txt) | LD_LIBRARY_PATH=. ./maxwordcount-dynamic
+	(cat .zadani.txt) | ./maxwordcount-cpp
 
 clean:
 	rm -f *.o *.d $(xlogin).zip

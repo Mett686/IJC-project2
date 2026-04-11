@@ -8,8 +8,9 @@
 #include "htab.h"
 #include "io.h"
 
-#define BUFF_SIZE 30000 // Velikost pole bucketu (arr_size v htab)
-// Vybrana jakozto prumerne slovni zasoba dospeleho cloveka
+#define BUFF_SIZE 100 // Maximalni delka slova
+#define BUCKET_COUNT 5000 // Pocet bucketu v htab
+// 5 tisic je prumerna slovni zasoba
 
 static unsigned count_threshold = 0;
 
@@ -45,10 +46,9 @@ bool htab_inc_add(htab_t* t, char* key) {
 }
 
 int main() {
-  htab_t* table = htab_init(50);
+  htab_t* table = htab_init(BUCKET_COUNT);
   char buffer[BUFF_SIZE];
-  unsigned len = 0;
-  while((len = read_word(BUFF_SIZE, buffer, stdin)) != (unsigned)EOF) {
+  while(read_word(BUFF_SIZE, buffer, stdin) != EOF) {
     if(htab_inc_add(table, buffer)) return EXIT_FAILURE;
   }
   htab_for_each(table, &print_most_common);

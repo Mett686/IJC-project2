@@ -8,19 +8,19 @@
 
 int read_word(unsigned max, char s[max], FILE * f) {
   static bool warned = false;
-  char c;
-  while((c = fgetc(f)) != EOF && isspace(c));
+  int c;
+  while(isspace(c = fgetc(f)));
   
   unsigned i = 0;
   while(c != EOF && !isspace(c)) {
     if(i < (max-1)) {
       s[i] = c;
-      c = fgetc(f);
       i++;
     } else if(!warned) {
       fprintf(stderr, "Warning: read_word: exceeded word limit, ignoring rest!\n");
       warned = true;
     }
+    c = fgetc(f);
   }
   s[i] = '\0';
 
@@ -28,5 +28,5 @@ int read_word(unsigned max, char s[max], FILE * f) {
     return EOF;
   }
 
-  return i;
+  return (int)i;
 }

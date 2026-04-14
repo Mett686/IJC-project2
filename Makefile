@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -std=c11 -pedantic -Wall -Wextra -MMD -MP -DMY_HASH_FUNCTION
+CFLAGS = -g -std=c11 -pedantic -Wall -Wextra -MMD -MP
 LDLIBS =
 xlogin = xknotem00
 

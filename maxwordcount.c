@@ -1,5 +1,5 @@
 // maxwordcount.c
-// Řešení IJC-DU2, příklad 1), 31.4.2026
+// Řešení IJC-DU2, příklad 2), 14.4.2026
 // Autor: Martin Knotek, FIT
 // Přeloženo: gcc version 15.2.1 20260123 (Red Hat 15.2.1-7) (GCC)
 
@@ -10,7 +10,9 @@
 
 #define BUFF_SIZE 100 // Maximalni delka slova
 #define BUCKET_COUNT 5000 // Pocet bucketu v htab
-// 5 tisic je prumerna slovni zasoba
+// Optimalni pocet bucketu pro hashovaci funkci v htablib
+// je polovina az dvojnasob poctu vstupu
+// proto 5000 jakozto prumerna slovni zasoba
 
 static unsigned count_threshold = 0;
 
@@ -28,8 +30,8 @@ size_t htab_hash_function(const char *str) {
 #endif
 
 void print_most_common(htab_pair_t* data) {
-  if(data->value == count_threshold)
-    fprintf(stdout, "%s\t%d\n", data->key, data->value);
+  if(data->value >= count_threshold)
+    fprintf(stdout, "%s\t%u\n", data->key, data->value);
 }
 
 bool htab_inc_add(htab_t* t, char* key) {
